@@ -1,0 +1,34 @@
+# Local development services (started/stopped with Docker Compose).
+# Start:  docker compose up -d
+# Stop:   docker compose down
+
+services:
+  # PostgreSQL database — the project's source of truth
+  db:
+    image: postgres:16
+    container_name: tickets-db
+    environment:
+      POSTGRES_USER: tickets
+      POSTGRES_PASSWORD: tickets
+      POSTGRES_DB: tickets
+    ports:
+      - "5432:5432"          # Mac port : container port
+    volumes:
+      - pgdata:/var/lib/postgresql/data   # data survives container restarts
+
+  # Redis — caching, rate limiting, sessions (used from Phase 3 on)
+  cache:
+    image: redis:7
+    container_name: tickets-cache
+    ports:
+      - "6379:6379"
+
+  # Adminer — a tiny web UI to browse the database (http://localhost:8080)
+  adminer:
+    image: adminer
+    container_name: tickets-adminer
+    ports:
+      - "8080:8080"
+
+volumes:
+  pgdata:
